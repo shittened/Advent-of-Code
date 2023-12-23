@@ -6,6 +6,7 @@ numbers = []
 engineparts = []
 sum = 0
 used_digits = []
+gear_ratios = []
 
 for linenum, line in enumerate(input):
     digits_in_line = []
@@ -54,36 +55,36 @@ for digits_in_line in digits:
             used_digits.append(digit1)
             #print(newnum)
 
-for number in numbers:
-    for symbol in symbols:
+for symbol in symbols:
+    next_to = 0
+    adjacent_numbers = []
+    for number in numbers:
         if number[2] == symbol[2]:
             if number[1][0] == symbol[1] + 1:
-                if number not in engineparts:
-                    engineparts.append(number)
+                next_to += 1
+                adjacent_numbers.append(number)
             elif number[1][len(number[1]) - 1] == symbol[1] - 1:
-                if number not in engineparts:
-                    engineparts.append(number)
+                next_to += 1
+                adjacent_numbers.append(number)
         elif number[2] == symbol[2] + 1:
             if number[1][0] - 1 <= symbol[1]:
                 if number[1][len(number[1]) - 1] + 1 >= symbol[1]:
-                    if number not in engineparts:
-                        engineparts.append(number)
+                    next_to += 1
+                    adjacent_numbers.append(number)
         elif number[2] == symbol[2] - 1:
             if number[1][0] - 1 <= symbol[1]:
                 if number[1][len(number[1]) - 1] + 1 >= symbol[1]:
-                    if number not in engineparts:
-                        engineparts.append(number)
+                    next_to += 1
+                    adjacent_numbers.append(number)
+    if symbol[0] == "*":
+        if next_to == 2:
+            #print(next_to, adjacent_numbers, symbol)
+            gear_ratio = int(adjacent_numbers[0][0]) * int(adjacent_numbers[1][0])
+            gear_ratios.append(gear_ratio)
 
-for enginepart in engineparts:
-    sum += int(enginepart[0])
+for gear_ratio in gear_ratios:
+    sum += gear_ratio
 
 print(sum)
-#print(engineparts)
-#for enginepart in engineparts:
-#    print(enginepart)
-#for digit in digits:
-#    print(digits)
-#print(digits[0])
-#for number in numbers:
-#    print(number)
-#print(used_digits)
+#print(gear_ratios)
+#print(len(gear_ratios))
