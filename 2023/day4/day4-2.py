@@ -1,24 +1,21 @@
-input = open("input.txt", "r")
+cards = open('input.txt').readlines()
 
-cards = []
-total = 0
+count = 0
+multiplier = [1 for _ in cards]
 
-for line in input:
-    line = line.rstrip()
-    card = line.split(":")[1].split("|")
-    #print(card)
-    cards.append(card)
-#print(cards)
+for i, card in enumerate(cards):
+    card = card.split(":")[1].split("|")
 
-total = len(cards)
+    winning = set([int(x) for x in card[0].strip().split()])
+    have = set(int(x) for x in card[1].strip().split())
 
-for cardnum, card in enumerate(cards):
-    matches = 0
-    for winning in card[0].split():
-        for owned in card[1].split():
-            if winning == owned:
-                matches += 1
-    #print(matches)
-    total += matches
+    wins = set(x for x in have if x in winning)
 
-print(total)
+    cmultiplier = multiplier[i]
+
+    for j in range(i + 1, min(i + len(wins) + 1, len(cards))):
+        multiplier[j] += cmultiplier
+
+    count += cmultiplier
+
+print(count)
