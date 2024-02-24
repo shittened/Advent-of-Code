@@ -1,96 +1,67 @@
 input = open("input.txt", "r")
-
+    
+cards = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'K']
+five_of_a_kind = [5]
+four_of_a_kind = [4, 1]
+full_house = [3, 2]
+three_of_a_kind = [3, 1, 1]
+two_pair = [2, 2, 1]
+one_pair = [2, 1, 1, 1]
+high_card = [1, 1, 1, 1, 1]
+ranks = [high_card, one_pair, two_pair, three_of_a_kind, full_house, four_of_a_kind, five_of_a_kind]
 hands = []
-card_order = ["A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"]
-hands_new = []
-total_winning = 0
+winnings = []
 
-five_of_a_kind  = [0, 0, 0, 0, 5]
-four_of_a_kind  = [1, 0, 0, 4, 0]
-full_house      = [0, 2, 3, 0, 0]
-three_of_a_kind = [2, 0, 3, 0, 0]
-two_pair        = [1, 4, 0, 0, 0]
-one_pair        = [3, 2, 0, 0, 0]
-high_card       = [5, 0, 0, 0, 0]
+def sort_hands(hand):
+    return hand[4], hand[0][1]
 
-for linenum, line in enumerate(input):
-    line = line.rstrip()
-    hands.append(line.split())
+for line in input:
+    line = line.split()
+    hand = []
+    cards_in_hand = []
 
-for handnum, hand in enumerate(hands):
-    cards = hand[0]
-    matches = []
-    for card1 in cards:
-        match = 0
-        for card2 in cards:
-            #print(card1, card2)
-            if card1 == card2:
-                match +=1
-        #print(matches)
-        matches.append(match)
-    hands[handnum].append(matches)
-    #print(hand[2])
+    for card in line[0]:
+        cards_in_hand.append(card)
+    hand.append(cards_in_hand)
 
-    nums = hand[2]
-    nums.sort()
-    #print(nums)
-    one, two, three, four, five = 0, 0, 0, 0, 0
-    for num in nums:
-        if num == 1:
-            one += 1
-        elif num == 2:
-            two += 1
-        elif num == 3:
-            three += 1
-        elif num == 4:
-            four += 1
-        elif num == 5:
-            five += 1
+    card_powers = []
+    card_types = []
+    for card in hand[0]:
+        if card not in card_types:
+            card_types.append(card)
+        for i in range(len(cards)):
+            if card == cards[i]:
+                card_powers.append(i + 1)
+    hand.append(card_powers)
 
-    count = [one, two, three, four, five]
-    power = 0
-    #print(count, nums)
-    if count == five_of_a_kind:
-        power = 7
-    elif count == four_of_a_kind:
-        power = 6
-    elif count == full_house:
-        power = 5
-    elif count == three_of_a_kind:
-        power = 4
-    elif count == two_pair:
-        power = 3
-    elif count == one_pair:
-        power = 2
-    elif count == high_card:
-        power = 1
-    hand.append(power)
-    #hand.append(1)
+    cards_counts = []
+    for card in card_types:
+        count = hand[0].count(card)
+        cards_counts.append([card, count])
+    hand.append(cards_counts)
 
-def sorting(e):
-    return e[3]
+    counts = []
+    for count in hand[2]:
+        counts.append(count[1])
+    counts = sorted(counts, reverse = True)
+    hand.append(counts)
 
-hands.sort(key = sorting, reverse = True)
+    for ranknum, rank in enumerate(ranks):
+        if hand[3] == rank:
+            hand.append(ranknum + 1)
 
-for handnum, hand in enumerate(hands):
-    cards = hand[0]
-    cards_power = [0, 0, 0, 0, 0]
-    for no, card_no in enumerate(card_order):
-        for card_pos, card in enumerate(cards):
-            if card == card_no:
-                cards_power[card_pos] = no
-    #print(cards_power)
-    hand.append(cards_power)
+    hand.append(int(line[1]))
+    hands.append(hand)
 
-hands = sorted(hands, key = lambda x: (x[3], x[4]), reverse = True)
+hands = sorted(hands, key = sort_hands, reverse = False)
+for rank, hand in enumerate(hands):
+    #print(hand)
+    winning = (rank + 1) * hand[5]
+    #print(winning)
+    winnings.append(winning)
 
-#print(hands)
-for hand in hands:
-    print(hand)
+total = 0
+for winning in winnings:
+    total += winning
 
-for linenum, hand in enumerate(hands):
-   hand.append(int(hand[1]) * (linenum + 1))
-   #print(hand)
-   total_winning += hand[5]
-
-print(total_winning)
+print(total)

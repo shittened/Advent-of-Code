@@ -2,35 +2,38 @@ input = open("input.txt", "r")
 
 times = []
 distances = []
-records = []
-margin_of_err = 1
+races = []
+list_ways_to_beat = []
 
 for linenum, line in enumerate(input):
-    line = line.rstrip()
-    line = line.split()
-    line.remove(line[0])
+    line = line.split()[1:]
     for num in line:
         if linenum == 0:
-            times.append(int(num))
+            times.append(num)
         else:
-            distances.append(int(num))
+            distances.append(num)
 
-for time in times:
-    good_times = 0
-    for distance in distances:
-        for hold in range(time):
-            hold += 1
-            speed = hold
-            current_time = time - hold
-            dist = hold * current_time
-            if dist > distance:
-                good_times += 1
-    if good_times > 0:
-        records.append(good_times)
-        #print(good_times)
+for i in range(len(times)):
+    race = []
+    race.append(int(times[i]))
+    race.append(int(distances[i]))
+    races.append(race)
 
-for record in records:
-    margin_of_err *= record
-    print(margin_of_err)
+for racenum, race in enumerate(races):
+    time = race[0]
+    record = race[1]
+    ways_to_beat = 0
+    for button_hold in range(time):
+        speed = button_hold
+        time_left = time - button_hold
+        distance = speed * time_left
+        if time_left <= time:
+            if distance > record:
+                ways_to_beat += 1
+    list_ways_to_beat.append(ways_to_beat)
 
-print(margin_of_err)
+margin_of_error = 1
+for i in list_ways_to_beat:
+    margin_of_error *= i
+
+print(margin_of_error)
